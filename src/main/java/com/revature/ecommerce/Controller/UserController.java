@@ -26,11 +26,11 @@ public class UserController {
 
     /**
      * Post new Users
-     * ENDPOINT localhost:9000/api/ecommerce/signup
+     * ENDPOINT localhost:9000/api/signup
      * @param appUser
      * @return
      */
-    @PostMapping("/api/ecommerce/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<String> signUp(@RequestBody AppUser appUser){
         try {
            userService.userSignUp(appUser);
@@ -46,13 +46,13 @@ public class UserController {
 
     /**
      * User Login
-     * ENDPOINT localhost:9000/api/ecommerce/login
+     * ENDPOINT localhost:9000/api/login
      * @param appUser
      * @return
      * @throws InvalidInput
      */
 
-    @PostMapping("/api/ecommerce/login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(@RequestBody AppUser appUser) throws InvalidInput {
         try {
             AppUser userLogin = userService.useLogin(appUser.getEmail(), appUser.getPassword());
@@ -63,7 +63,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/ecommerce/user/{userId}")
+    @GetMapping("/api/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable long userId){
         try {
            AppUser user = userService.getUserById(userId);
@@ -74,7 +74,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/api/ecommerce/user/{userId}")
+    @PatchMapping("/api/user/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable long userId, @RequestBody AppUser appUser){
         try {
             userService.updateUser(userId, appUser);

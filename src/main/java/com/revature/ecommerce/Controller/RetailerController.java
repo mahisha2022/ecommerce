@@ -28,7 +28,7 @@ public class RetailerController {
      * @return
      */
 
-    @PostMapping("/api/ecommerce/retailer/signup")
+    @PostMapping("/api/retailer/signup")
     public ResponseEntity<String> signup(@RequestBody Retailer retailer){
         try {
             retailerService.retailSignup(retailer);
@@ -46,10 +46,10 @@ public class RetailerController {
      * @return
      */
 
-    @PostMapping("/api/ecommerce/retailer/login")
+    @PostMapping("/api/retailer/login")
     public ResponseEntity<?> login(@RequestBody Retailer retailer){
         try {
-            Retailer retailerLogin = retailerService.retailerLogin(retailer);
+            Retailer retailerLogin = retailerService.retailerLogin(retailer.getEmail(), retailer.getPassword());
             return ResponseEntity.ok(retailerLogin);
         }
         catch (InvalidInput e){
@@ -59,13 +59,13 @@ public class RetailerController {
 
     /**
      * Get Retailer By Id
-     * ENDPOINT localhost:9000//api/ecommerce/retailer/{retailerId}
+     * ENDPOINT localhost:9000/api/retailer/{retailerId}
      * @param retailerId
      * @return
      * @throws InvalidInput
      */
 
-    @GetMapping("/api/ecommerce/retailer/{retailerId}")
+    @GetMapping("/api/retailer/{retailerId}")
     public ResponseEntity<?> getRetailerById(@PathVariable long retailerId) throws InvalidInput {
         Optional<Retailer> retailer = retailerService.getRetailerById(retailerId);
         return  ResponseEntity.ok().body(retailer);
@@ -75,12 +75,12 @@ public class RetailerController {
 
     /**
      * Update Retailer
-     * ENDPOINT PATCH localhost:9000/api/ecommerce/retailer/{retailerId}
+     * ENDPOINT PATCH localhost:9000/api/retailer/{retailerId}
      * @param retailerId
      * @param retailer
      * @return
      */
-    @PatchMapping("/api/ecommerce/retailer/{retailerId}")
+    @PatchMapping("/api/retailer/{retailerId}")
     public ResponseEntity<String> updateRetailer(@PathVariable long retailerId, @RequestBody Retailer retailer){
        try {
            retailerService.updateRetailer(retailerId, retailer);

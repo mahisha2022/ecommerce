@@ -28,7 +28,8 @@ public class Retailer {
     private String address;
 
 
-    @OneToMany(mappedBy = "retailer")
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<Product> products;
 
 

@@ -28,9 +28,8 @@ public class AppUser {
     @Column
     private String password;
 
-
-
-
-
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonBackReference
+    private List<Orders> orders;
 
 }

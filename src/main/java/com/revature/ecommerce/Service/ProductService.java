@@ -7,10 +7,8 @@ import com.revature.ecommerce.Model.Retailer;
 import com.revature.ecommerce.Repository.InventoryRepository;
 import com.revature.ecommerce.Repository.ProductRepository;
 import com.revature.ecommerce.Repository.RetailerRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +37,8 @@ public class ProductService {
 
 
         product.setRetailer(retailer);
-//        product.setInventory(inventory);
+        Product newProduct = productRepository.save(product);
+        newProduct.setRetailerId(retailerId);
         productRepository.save(product);
 
         Inventory inventory = new Inventory();
@@ -98,15 +97,8 @@ public class ProductService {
      * @return
      */
 
-    public Product getProductById(long productId) throws InvalidInput {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        Product product = productOptional.get();
-        if (productOptional.isPresent()) {
-            return product;
-        } else {
-            throw new InvalidInput("Product not found");
-        }
-
+    public Optional<Product> getProductById(long productId)  {
+       return productRepository.findById(productId);
 
     }
 }

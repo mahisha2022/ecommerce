@@ -24,12 +24,15 @@ public class Product {
     private double price;
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
     @JoinColumn(name = "retailerId")
     private Retailer retailer;
 
+    @Column(name = "retailerId",insertable=false, updatable=false)
+    private Long retailerId;
 
-
-
-
+//    @OneToMany(fetch = FetchType.EAGER)
+//    @JsonBackReference
+//    private List<Orders> orders;
 }

@@ -53,15 +53,10 @@ public class ProductController {
      * @param productId
      * @return
      */
-    @GetMapping("/api/ecommerce/product/{productId}")
+    @GetMapping("/api/product/{productId}")
     public ResponseEntity<?> getProductById(@PathVariable long productId)  {
-        try {
-            Product product = productService.getProductById(productId);
-            return ResponseEntity.ok().body(product);
-        }
-        catch (InvalidInput e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Optional<Product> product = productService.getProductById(productId);
+        return ResponseEntity.ok().body(product);
     }
 
     /**
@@ -72,7 +67,7 @@ public class ProductController {
      * @return
      */
 
-    @PatchMapping("/api/ecommerce/product/{productId}")
+    @PatchMapping("/api/product/{productId}")
     public ResponseEntity<?> updateProduct(@PathVariable long productId, @RequestBody Product product){
         try {
             productService.updateProduct(productId, product);
@@ -90,7 +85,7 @@ public class ProductController {
      * @param productId
      * @return
      */
-    @DeleteMapping("/api/ecommerce/product/{productId}")
+    @DeleteMapping("/api/product/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable long productId){
         try {
             productService.deleteProduct(productId);

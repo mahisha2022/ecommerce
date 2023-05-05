@@ -12,6 +12,7 @@ import com.revature.ecommerce.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,7 +39,7 @@ public class OrderService {
      * @param orders
      * @return
      */
-    public void  addOrder(long productId, long userId, Orders orders) throws InvalidInput {
+    public Orders  addOrder(long productId, long userId, Orders orders) throws InvalidInput {
         try {
             AppUser user = userRepository.findById(userId).orElseThrow(() -> new InvalidInput("User Not Found"));
             Product product = productRepository.findById(productId).orElseThrow(() -> new InvalidInput("Product not found"));
@@ -56,10 +57,13 @@ public class OrderService {
             orders.setProduct(product);
             orders.setUser(user);
 
-            inventory.setQuantity(inventory.getQuantity() - orderQty);
+            Orders newOrders = orderRepository.save(orders);
+            newOrders.setProductId(productId);
+            newOrders.setUserId(userId);
 
-            orderRepository.save(orders);
+            inventory.setQuantity(inventory.getQuantity() - orderQty);
             inventoryRepository.save(inventory);
+            return newOrders;
         }
        catch (InvalidInput e){
             throw new InvalidInput("Failed to add order");
@@ -94,14 +98,35 @@ public class OrderService {
     public void updateOrder(long orderId, Orders updatedOrders) throws InvalidInput {
         Optional<Orders> orderOptional = orderRepository.findById(orderId);
         Orders orders = orderOptional.get();
+
+        Product product = orders.getProduct();
+        Inventory inventory = inventoryRepository.findByProduct(product);
+
         if (orderOptional.isPresent()){
-            if (updatedOrders.getQuantity() != 0){
+            if (updatedOrders.getQuantity() > 0){
+                //get the quantity difference
+                int oldQty = orders.getQuantity();
+                int newQty = updatedOrders.getQuantity();
+                int difference = newQty - oldQty;
+
+                if (inventory.getQuantity() + difference  < 0){
+                    throw new InvalidInput("Not enough quantity available");
+                }
+
+
+
                 orders.setQuantity(updatedOrders.getQuantity());
+                orders.setTotalPrice(newQty * product.getPrice());
+
+                inventory.setQuantity(inventory.getQuantity() - newQty + oldQty);
+                inventoryRepository.save(inventory);
+
+                 orderRepository.save(orders);
+
+
             }
-            if (updatedOrders.getProduct() != null){
-                orders.setProduct(updatedOrders.getProduct());
-            }
-            orderRepository.save(orders);
+
+
         }
         else {
             throw new InvalidInput("Failed to update order");
@@ -115,25 +140,26 @@ public class OrderService {
      * @return
      * @throws InvalidInput
      */
-    public Orders getOrderById(long orderId) throws InvalidInput {
-        Optional<Orders> orderOptional = orderRepository.findById(orderId);
-        Orders orders = orderOptional.get();
-        if (orderOptional.isPresent()){
-            return orders;
-        }
-        else {
-            throw new InvalidInput("Order not found");
-        }
+    public Optional<Orders> getOrderById(long orderId) {
+       return orderRepository.findById(orderId);
+
     }
 
     /**
      * Get Order by user
-     * @param userId
+     * @param user
      * @return
      */
 
-    public List<Orders> getOrderByUser(long userId){
-        return orderRepository.findByUserId(userId);
+    public List<Orders> getOrderByUser(AppUser user) throws InvalidInput {
+        Optional<AppUser> userOptional = userRepository.findById(user.getId());
+        if (userOptional.isPresent()){
+            return orderRepository.findByUser(user);
+        }
+        else {
+            throw new InvalidInput("User not found");
+        }
+
     }
 
     /**
@@ -153,5 +179,6 @@ public class OrderService {
     public Optional<Orders> getOrderByProduct(long productId){
       return orderRepository.findByProductId(productId);
     }
+
 
 }

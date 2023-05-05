@@ -42,12 +42,14 @@ public class RetailerService {
      * @throws InvalidInput
      */
 
-    public Retailer retailerLogin(Retailer retailer) throws InvalidInput{
-        Retailer existedRetailer = retailerRepository.findByEmailAndPassword(retailer.getEmail(), retailer.getPassword());
-        if (existedRetailer == null){
-            throw new InvalidInput("User not found");
+    public Retailer retailerLogin(String email, String Password) throws InvalidInput{
+        Retailer existedRetailer = retailerRepository.findByEmailAndPassword(email, Password);
+        if (existedRetailer != null){
+            return existedRetailer;
         }
-        return retailer;
+        else {
+            throw new InvalidInput("Invalid Password or Username");
+        }
     }
 
     /**
