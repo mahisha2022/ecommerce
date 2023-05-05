@@ -24,7 +24,7 @@ public class RetailerService {
      * @param retailer
      * @throws InvalidInput
      */
-    public void retailSignup(Retailer retailer) throws InvalidInput {
+    public Retailer retailSignup(Retailer retailer) throws InvalidInput {
         Retailer existedRetailer = retailerRepository.findByEmail(retailer.getEmail());
         if (existedRetailer != null){
             throw  new InvalidInput("user already existed.");
@@ -32,7 +32,7 @@ public class RetailerService {
         if (retailer.getPassword().length() < 6){
             throw  new InvalidInput("Password must be at least 6 characters");
         }
-        retailerRepository.save(retailer);
+       return retailerRepository.save(retailer);
     }
 
     /**
