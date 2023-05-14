@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,6 +58,36 @@ public class ProductController {
     public ResponseEntity<?> getProductById(@PathVariable long productId)  {
         Optional<Product> product = productService.getProductById(productId);
         return ResponseEntity.ok().body(product);
+    }
+
+    /**
+     * Get Product By Retailer
+     * Endpoint GET localhost:9000/api/product/retailer/{retailerId}
+     * @param retailerId
+     * @return
+     */
+
+    @GetMapping("/api/product/retailer/{retailerId}")
+    public ResponseEntity<?> getProductByRetailer(@PathVariable long retailerId){
+        try {
+           List<Product> product =  productService.getProductsByRetailer(retailerId);
+            return ResponseEntity.ok().body(product);
+        }
+        catch (InvalidInput e){
+            return ResponseEntity.badRequest().body("Failed to load product by Retailer");
+        }
+    }
+
+    /**
+     * Get all Products
+     * EndPoint localhost:9000/api/products
+     * @return
+     */
+
+
+    @GetMapping("/api/products")
+    public List<Product> getAllProducts(){
+        return productService.getAllProducts();
     }
 
     /**

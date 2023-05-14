@@ -37,7 +37,7 @@ public class RetailerService {
 
     /**
      * Retailer Login
-     * @param retailer
+     * @param email, password
      * @return
      * @throws InvalidInput
      */

@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -100,5 +103,34 @@ public class ProductService {
     public Optional<Product> getProductById(long productId)  {
        return productRepository.findById(productId);
 
+    }
+
+    /**
+     * Get Product By Retailer
+     * @param retailerId
+     * @return
+     * @throws InvalidInput
+     */
+
+
+    public List<Product> getProductsByRetailer(Long retailerId) throws InvalidInput {
+        Retailer retailer = retailerRepository.findById(retailerId).orElse(null);
+        List<Product> products = productRepository.findByRetailer(retailer);
+        if (retailer != null) {
+            return products;
+        }
+        else {
+            return null;
+        }
+
+    }
+
+    /**
+     * Get List of All Products
+     * @return
+     */
+
+    public List<Product> getAllProducts(){
+        return productRepository.findAll();
     }
 }

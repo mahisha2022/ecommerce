@@ -56,10 +56,10 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody AppUser appUser) throws InvalidInput {
         try {
             AppUser userLogin = userService.useLogin(appUser.getEmail(), appUser.getPassword());
-            return ok(userLogin);
+            return ResponseEntity.ok().body(userLogin);
         }
         catch (InvalidInput e){
-            return status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
 
